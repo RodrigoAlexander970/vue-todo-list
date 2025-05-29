@@ -1,0 +1,44 @@
+{
+  "items": [
+    {
+      "id": "1",
+      "title": "Make a todo list app",
+      "checked": true
+    },
+    {
+      "id": "2",
+      "title": "Predict the weather",
+      "checked": true
+    },
+    {
+      "id": "3",
+      "title": "Read some comics",
+      "checked": true
+    },
+    {
+      "id": "5",
+      "title": "Track my expenses",
+      "checked": true
+    },
+    {
+      "id": "6",
+      "title": "Organise a game night",
+      "checked": true
+    },
+    {
+      "id": "7",
+      "title": "Learn a nsssssssssssssssssssssew language",
+      "checked": false
+    },
+    {
+      "id": "8",
+      "title": "Publish my work",
+      "checked": false
+    },
+    {
+      "title": "Estudiar Framework frontend en vacaciones, para el examen el primer dia de clases",
+      "checked": false,
+      "id": "10"
+    }
+  ]
+}
