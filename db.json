@@ -1,14 +1,9 @@
 {
   "items": [
     {
-      "id": "1",
-      "title": "Make a todo list app",
-      "checked": true
-    },
-    {
       "id": "2",
       "title": "Predict the weather",
-      "checked": true
+      "checked": false
     },
     {
       "id": "3",
@@ -24,11 +19,6 @@
       "id": "6",
       "title": "Organise a game night",
       "checked": true
-    },
-    {
-      "id": "7",
-      "title": "Learn a nsssssssssssssssssssssew language",
-      "checked": false
     },
     {
       "id": "8",
@@ -66,13 +56,8 @@
       "checked": false
     },
     {
-      "id": 16,
-      "title": "Test",
-      "checked": false
-    },
-    {
-      "id": 17,
-      "title": "Another test",
+      "id": "16",
+      "title": "Prueba 2000000",
       "checked": false
     }
   ]
