@@ -3,19 +3,6 @@ import { ref, onMounted, computed } from 'vue'
 import type { Ref } from 'vue'
 import ListItem from './ListItem.vue'
 type Item = { id: number, title: string; checked?: boolean }
-const initListItems = (): void => {
-    // Obtener los items desde la API y actualizar storageItems
-    fetch('http://localhost:3000/items')
-        .then(response => response.json())
-        .then((listItems: Item[]) => {
-            storageItems.value = listItems
-        })
-        .catch(() => {
-            storageItems.value = []
-        })
-
-        console.log(storageItems)
-}
 
 const updateItem = (item: Item): void => {
     const updatedItem = findItemInList(item)
@@ -38,26 +25,57 @@ const sortedList = computed(() =>
         (b.checked ? 1 : 0))
 )
 
-const setToStorage = (items: Item[]): void => {
-    localStorage.setItem('list-items', JSON.stringify(items))
-}
-const getFromStorage = (): Item[] | [] => {
-    const stored = localStorage.getItem('list-items')
-    if (stored) {
-        return JSON.parse(stored)
+const saveTask = async (item: Item): Promise<void> => {
+    try {
+        await fetch('http://localhost:3000/items', {
+            method: 'POST',
+            body: JSON.stringify(item),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+    } catch (error) {
+        console.error('Failed to add a item:', error)
     }
-    return []
+}
+
+const getFromJsonServer = async (): Promise<Item[]> => {
+    try {
+        const response = await fetch('http://localhost:3000/items')
+        return await response.json()
+    } catch {
+        return []
+    }
 }
 
 const storageItems: Ref<Item[]> = ref([])
 
-onMounted(() => {
-    initListItems()
-    storageItems.value = getFromStorage()
+// Add the missing task variable for v-model binding
+const taskName = ref('')
+
+onMounted(async () => {
+    storageItems.value = await getFromJsonServer()
 })
 
+async function addTask() {
+    if (!taskName.value.trim()) return;
+    // Obtener el último id
+    const lastId = storageItems.value.length > 0
+        ? Math.max(...storageItems.value.map(item => item.id))
+        : 0;
+    const newItem: Item = {
+        id: lastId + 1,
+        title: taskName.value,
+        checked: false
+    };
+    await saveTask(newItem);
+    storageItems.value = await getFromJsonServer();
+    taskName.value = '';
+}
 </script>
 <template>
+    <input v-model="taskName" placeholder="Buy some milk" />
+    <button @click="addTask">Add task</button>
     <ul>
         <li :key="item.id" v-for="item in sortedList" class="todo-list-item">
                 <ListItem :is-checked="item.checked" @click="updateItem(item)">
