@@ -3,7 +3,6 @@ import { ref, onMounted, computed } from 'vue'
 import type { Ref } from 'vue'
 import ListItem from './ListItem.vue'
 type Item = { id: number, title: string; checked?: boolean }
-
 const initListItems = (): void => {
     // Obtener los items desde la API y actualizar storageItems
     fetch('http://localhost:3000/items')
@@ -22,6 +21,7 @@ const updateItem = (item: Item): void => {
     const updatedItem = findItemInList(item)
     if (updatedItem) {
         toggleItemChecked(updatedItem)
+        setToStorage(storageItems.value)
     }
 }
 const findItemInList = (item: Item): Item | undefined => {
@@ -34,21 +34,37 @@ const toggleItemChecked = (item: Item): void => {
 }
 
 const sortedList = computed(() =>
-  [...storageItems.value].sort((a, b) => (a.checked ? 1 : 0) - (b.checked ? 1 : 0))
+    [...storageItems.value].sort((a, b) => (a.checked ? 1 : 0) -
+        (b.checked ? 1 : 0))
 )
+
+const setToStorage = (items: Item[]): void => {
+    localStorage.setItem('list-items', JSON.stringify(items))
+}
+const getFromStorage = (): Item[] | [] => {
+    const stored = localStorage.getItem('list-items')
+    if (stored) {
+        return JSON.parse(stored)
+    }
+    return []
+}
 
 const storageItems: Ref<Item[]> = ref([])
 
 onMounted(() => {
     initListItems()
+    storageItems.value = getFromStorage()
 })
 
 </script>
 <template>
     <ul>
-        <li :key='key' v-for='(item, key) in sortedList'>
-            <ListItem :is-checked='item.checked' v-on:click.prevent="updateItem(item)">{{ item.title }}</ListItem>
-        </li>
+        <li :key="item.id" v-for="item in sortedList" class="todo-list-item">
+                <ListItem :is-checked="item.checked" @click="updateItem(item)">
+                {{ item.title }}
+                </ListItem>
+                <!--<button @click="deleteItem(item)" class="todo-delete-btn">Eliminar</button>-->
+            </li>
     </ul>
 </template>
 <style scoped>
